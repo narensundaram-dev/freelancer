@@ -7,12 +7,14 @@ from selenium import webdriver
 from bs4 import BeautifulSoup as bs
 
 URL = "https://www.instagram.com"
+# TODO: TAG should be from CLA
 TAG = "streetbrand"
 
 
 class InstagramScrapy:
 
     def __init__(self):
+        # TODO: chromedriver should be from CLA
         self.chrome = webdriver.Chrome('/home/naren/Downloads/chromedriver')
         self.posts = []
         self.users = {}
@@ -74,6 +76,7 @@ class InstagramScrapy:
                 username = self.get_user_name(post)
                 self.users[username] = self.get_user_info(username)
 
+            # TODO: Write it as excel file
             with open("users.json", "w+") as fobj:
                 json.dump(self.users, fobj, indent=4)
         finally:
