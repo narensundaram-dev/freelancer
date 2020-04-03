@@ -20,6 +20,13 @@ log = logging.getLogger(__file__.split('/')[-1])
 
 class Instagram:
 
+    pattern_mobile = (
+        r"(([+][(]?[0-9]{1,3}[)]?)|([(]?[0-9]{4}[)]?))\s*[)]?[-\s\.]?[(]?[0-9]{1,3}[)]?([-\s\.]?[0-9]{3})([-\s\.]?[0-9]{3,4})",
+    )
+    pattern_email = (
+        r"([a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+)",
+    )
+
     def __init__(self, tag, conf, cred):
         self.tag = tag
         self.conf = conf
@@ -81,7 +88,8 @@ class Instagram:
             len(posts), self.get_scroll_limit()))
         return ["{}{}".format(URL, post.attrs["href"]) for post in posts]
 
-    def get_user_name(self, post):
+    @classmethod
+    def get_user_name(cls, post):
         html = requests.get(post).text
         soup = BeautifulSoup(html, "html.parser")
         data_json = str(soup.find_all("script", text=re.compile("^window._sharedData.*"))[0].string).replace(
@@ -89,21 +97,46 @@ class Instagram:
         data = json.loads(data_json)
         return data["entry_data"]["PostPage"][0]["graphql"]["shortcode_media"]["owner"]["username"]
 
-    def get_user_info(self, username):
+    @classmethod
+    def get_user_email(cls, bio):
+        data = []
+        for pattern in cls.pattern_email:
+            matches = re.findall(pattern, bio)
+            data.extend(matches)
+        return ", ".join(data)
+
+    @classmethod
+    def get_user_phone(cls, bio):
+        data = []
+        for pattern in cls.pattern_mobile:
+            matches = re.findall(pattern, bio)
+            data.extend(matches)
+        return ", ".join(data)
+
+    @classmethod
+    def get_user_gender(cls, bio):
+        if "female" in bio.lower():
+            return "Female"
+        elif "male" in bio.lower() and "female" not in bio.lower():
+            return "Male"
+
+    @classmethod
+    def get_user_info(cls, username):
         url = "{}/{}/?__a=1".format(URL, username)
         log.debug("Fetching user info from url: {}".format(url))
         response = requests.get(url).json()
         user = response["graphql"]["user"]
+        bio = user["biography"]
         return {
             "name": u"{}".format(user["full_name"]),
             "username": user["username"],
             "count_followers": user["edge_followed_by"]["count"],
 
             # To fetch it from user["biography"] using regex
-            "gender": "",
             "city": "",
-            "email": "",
-            "phone": ""
+            "gender": cls.get_user_gender(bio),
+            "email": cls.get_user_email(bio),
+            "phone": cls.get_user_phone(bio)
         }
 
     def get_users(self):
@@ -115,19 +148,24 @@ class Instagram:
             self.scroll_to_bottom()
 
             soup = BeautifulSoup(self.chrome.page_source, 'html.parser')
+
+            # BUG: self.chrome.page_source is not loading all the posts. Max 45 posts are loaded.
+            with open("source.html", "w+") as fobj:
+                fobj.write(self.chrome.page_source)
+
             self.posts = self.get_posts(soup)
 
             log.info("Started fetching the user information from scrapped posts.")
+            self.users["narensundaram.dev"] = self.get_user_info("narensundaram.dev")
+
             for post in self.posts:
                 username = self.get_user_name(post)
-                self.users[username] = self.get_user_info(username)
+                if username not in self.users:
+                    self.users[username] = self.get_user_info(username)
             log.info("{} no of users fetched from extracted posts on Instagram".format(len(self.users)))
 
             df = pd.DataFrame(list(self.users.values()))
             df.to_excel("users.xls", index=False)
-
-            df = pd.DataFrame(self.users)
-            df.to_excel()
         finally:
             self.chrome.close()
 
@@ -147,7 +185,7 @@ def get_insta_cred():
 def get_args():
     arg_parser = argparse.ArgumentParser()
     arg_parser.add_argument('-t', '--tag', type=str, default="streetbrand",
-                            help='Enter the tag-name (Eg: STREETBRAND) to scrap from Instagram.')
+                            help='Enter the tag-name (Eg: streetbrand) to scrap from Instagram.')
     arg_parser.add_argument('-log-level', '--log_level', type=str, choices=("INFO", "DEBUG"),
                             default="INFO", help='Where do you want to post the info?')
     return arg_parser.parse_args()
@@ -178,7 +216,7 @@ def main():
     log.info("Script starts at: {}".format(start))
     log.info("Tag name: '{}' is given to fetch from Instagram".format(args.tag))
 
-    Instagram(tag=args.tag, conf=conf, cred=cred).get_users()
+    Instagram(tag=args.tag.lower(), conf=conf, cred=cred).get_users()
 
     end = dt.now().strftime("%d-%m-%Y %H:%M:%S %p")
     log.info("Script ends at: {}".format(end))
