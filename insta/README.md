@@ -13,3 +13,15 @@ in the 'RECENT' section.
 - EMAIL ADDRESS (IF DISPLAYED)
 - PHONE NUMBER (IF DISPLAYED)
 
+
+# Setup:
+
+- Install chrome-driver(for your chrome version) from https://chromedriver.chromium.org/downloads
+- Extract the downloaded zip to ~/Documents/chromedriver
+- Add the path to conf.ini under variable *CHROME_DRIVER_PATH*
+
+
+# How to run a script
+
+- For Help: `python insta.py -h`
+- To run: `python insta.py -t streetbrand`
