@@ -8,7 +8,7 @@ import argparse
 import configparser
 from datetime import datetime as dt
 
-
+import pandas as pd
 from bs4 import BeautifulSoup
 from selenium import webdriver
 
@@ -123,9 +123,11 @@ class Instagram:
                 self.users[username] = self.get_user_info(username)
             log.info("{} no of users fetched from extracted posts on Instagram".format(len(self.users)))
 
-            # TODO: Write it as excel file
-            with open("users.json", "w+") as fobj:
-                json.dump(self.users, fobj, indent=4)
+            df = pd.DataFrame(list(self.users.values()))
+            df.to_excel("users.xls", index=False)
+
+            df = pd.DataFrame(self.users)
+            df.to_excel()
         finally:
             self.chrome.close()
 
