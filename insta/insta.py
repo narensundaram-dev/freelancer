@@ -150,24 +150,22 @@ class Instagram:
         log.info("Fetching user info from url: {}".format(url))
 
         # Ignoring requests usage since it redirects the login page sometimes
-        cookies = self.chrome.get_cookies()
-        session = requests.Session()
-        for cookie in cookies:
-            session.cookies.set(cookie["name"], cookie["value"])
-        response = session.get(url).json()
+        response = requests.get(url)
+        if response.status_code == 200:
+            response = response.json()
+        else:
+            log.info("Can't get user info for {}. Status code: {}".format(username, response.status_code))
+            return False
 
-        cookies_resp = [{'name': name, 'value': value} for name, value in response.cookies.get_dict().items()]
-        for cookie in cookies_resp:
-            self.chrome.add_cookie(cookie)
+        user = response["graphql"]["user"]
+        bio = user["biography"]
+        cls = Instagram
 
         # self.chrome.get(url)
         # time.sleep(0.5)
         # soup = BeautifulSoup(self.chrome.page_source, "html.parser")
         # response = json.loads(soup.body.pre.get_text())
 
-        user = response["graphql"]["user"]
-        bio = user["biography"]
-        cls = Instagram
         return {
             "name": u"{}".format(user["full_name"]),
             "username": user["username"],
@@ -193,15 +191,15 @@ class Instagram:
 
             log.info("Started fetching the user information from scrapped posts.")
             # added for testing purpose. will remove it on moving to prod.
-            self.users["narensundaram.dev"] = self.get_user_info("narensundaram.dev")
+            info = self.get_user_info("narensundaram.dev")
+            if info:
+                self.users["narensundaram.dev"] = info
             for post in self.posts:
                 username = self.get_user_name(post)
                 if username not in self.users:
-                    try:
+                    info = self.get_user_info(username)
+                    if info:
                         self.users[username] = self.get_user_info(username)
-                    except:
-                        log.debug("Failed to fetch data for username {}".format(username))
-                        pass
             log.info("{} no of users fetched from extracted posts on Instagram".format(len(self.users)))
 
             df = pd.DataFrame(list(self.users.values()))
