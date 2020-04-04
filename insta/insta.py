@@ -51,7 +51,7 @@ class Instagram:
             dom_username.send_keys(self.cred["USERNAME"])
             dom_password.send_keys(self.cred["PASSWORD"])
             dom_login_btn.click()
-            time.sleep(3)
+            time.sleep(5)
         except BaseException as err:
             log.error("Error: ", err)
 
@@ -83,12 +83,14 @@ class Instagram:
             # If the page reaches the bottom and no more posts to load
             new_height = self.chrome.execute_script("return document.body.scrollHeight")
             if new_height == last_height:
+                log.info("Instagram reaches the bottom. Quits scrolling.")
                 break
             last_height = new_height
 
             # If the page reaches the limit to fetch the number of posts
             count += 1
             if count >= limit:
+                log.info("Limit exceeds. Quits scrolling. Count: {}; Limit: {}".format(count, limit))
                 break
 
             log.info("Instagram page scrolled to page {}".format(count+1))
@@ -148,11 +150,20 @@ class Instagram:
         log.info("Fetching user info from url: {}".format(url))
 
         # Ignoring requests usage since it redirects the login page sometimes
-        # response = requests.get(url).json()
-        self.chrome.get(url)
+        cookies = self.chrome.get_cookies()
+        session = requests.Session()
+        for cookie in cookies:
+            session.cookies.set(cookie["name"], cookie["value"])
+        response = session.get(url).json()
+
+        cookies_resp = [{'name': name, 'value': value} for name, value in response.cookies.get_dict().items()]
+        for cookie in cookies_resp:
+            self.chrome.add_cookie(cookie)
+
+        # self.chrome.get(url)
         # time.sleep(0.5)
-        soup = BeautifulSoup(self.chrome.page_source, "html.parser")
-        response = json.loads(soup.body.pre.get_text())
+        # soup = BeautifulSoup(self.chrome.page_source, "html.parser")
+        # response = json.loads(soup.body.pre.get_text())
 
         user = response["graphql"]["user"]
         bio = user["biography"]
@@ -186,7 +197,11 @@ class Instagram:
             for post in self.posts:
                 username = self.get_user_name(post)
                 if username not in self.users:
-                    self.users[username] = self.get_user_info(username)
+                    try:
+                        self.users[username] = self.get_user_info(username)
+                    except:
+                        log.debug("Failed to fetch data for username {}".format(username))
+                        pass
             log.info("{} no of users fetched from extracted posts on Instagram".format(len(self.users)))
 
             df = pd.DataFrame(list(self.users.values()))
