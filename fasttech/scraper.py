@@ -8,7 +8,7 @@ from datetime import datetime as dt
 
 import requests
 import pandas as pd
-from bs4 import BeautifulSoup, Tag
+from bs4 import BeautifulSoup, Tag, NavigableString
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -46,6 +46,7 @@ class WebsiteContentModified(Exception):
 class Product(object):
 
     def __init__(self, id, soup, destination):
+        log.info("Getting information for product id: {}".format(id))
         self.id = id
         self.soup = soup
         self.destination = destination
@@ -59,32 +60,35 @@ class Product(object):
             path = self.product_path.format(name)
             os.makedirs(path, exist_ok=True)
             return name
-        except WebsiteContentModified as e:
-            print(e)
+        except (Exception, WebsiteContentModified) as e:
+            log.debug("Product name is missing for product with id: {}".format(self.id))
             return ""
 
     @property
     def description(self):
         try:
-            return self.soup.head.find("meta", attrs={"name": "twitter:description"}).attrs["content"]
-        except WebsiteContentModified as e:
-            print(e)
+            descriptions = self.soup.body.find("div", attrs={"class": "ProductDescriptions"})
+            children = list(list(descriptions.children)[1].children)
+            children_filtered = list(filter(lambda x: not isinstance(x, NavigableString), children))
+            return "\n".join(list(map(lambda x: x.get_text(), children_filtered)))
+        except (Exception, WebsiteContentModified) as e:
+            log.debug("Product description is missing for product with id: {}".format(self.id))
             return ""
 
     @property
     def price(self):
         try:
             return float(self.soup.head.find("meta", attrs={"property": "og:price:amount"}).attrs["content"])
-        except WebsiteContentModified as e:
-            print(e)
+        except (Exception, WebsiteContentModified) as e:
+            log.debug("Product price is missing for product with id: {}".format(self.id))
             return 0.0
 
     @property
     def currency(self):
         try:
             return self.soup.head.find("meta", attrs={"property": "og:price:currency"}).attrs["content"]
-        except WebsiteContentModified as e:
-            print(e)
+        except (Exception, WebsiteContentModified) as e:
+            log.debug("Product price currency is missing for product with id: {}".format(self.id))
             return ""
 
     @property
@@ -93,19 +97,19 @@ class Product(object):
             if self.currency == "GBP":
                 return self.price
             elif self.currency == "USD":
-                return self.price / 0.81
+                return round(self.price / 0.81, 2)
             return "{} {}".format(self.price, self.currency)
-        except WebsiteContentModified as e:
-            print(e)
+        except (Exception, WebsiteContentModified) as e:
+            log.debug("Product price GBP is missing for product with id: {}".format(self.id))
             return 0.0
 
     @property
     def availability(self):
         try:
-            avail_siblings = list(self.soup.body.find("meta", attrs={"itemprop": "availability"}).next_siblings)
-            return list(filter(lambda x: isinstance(x, Tag), avail_siblings))[0].text.strip()
-        except WebsiteContentModified as e:
-            print(e)
+            siblings = list(self.soup.body.find("meta", attrs={"itemprop": "availability"}).next_siblings)
+            return list(filter(lambda x: isinstance(x, Tag), siblings))[0].text.strip()
+        except (Exception, WebsiteContentModified) as e:
+            log.debug("Product availability is missing for product with id: {}".format(self.id))
             return 0.0
 
     @property
@@ -114,8 +118,8 @@ class Product(object):
             photo_frame = list(self.soup.body.find("div", id="PhotoFrame").next_siblings)
             siblings = list(filter(lambda x: isinstance(x, Tag), photo_frame))
             return list(map(lambda x: "https://{}".format(x.attrs["href"][2:]), siblings))
-        except WebsiteContentModified as e:
-            print(e)
+        except (Exception, WebsiteContentModified) as e:
+            log.debug("Product images is missing for product with id: {}".format(self.id))
             return []
 
     def store_description(self):
