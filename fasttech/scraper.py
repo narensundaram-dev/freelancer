@@ -1,4 +1,5 @@
 import os
+import re
 import time
 import shutil
 import logging
@@ -131,7 +132,8 @@ class Product(object):
         for idx, url_image in enumerate(self.images):
             response = requests.get(url_image, stream=True)
             if response.status_code == 200:
-                path = os.path.join(self.product_path.format(self.name), "image_{}".format(idx+1))
+                fname = "{}_{}.{}".format("image", idx+1, response.headers['Content-Type'].split("/")[1])
+                path = os.path.join(self.product_path.format(self.name), "{}".format(fname))
                 with open(path, "wb") as f:
                     shutil.copyfileobj(response.raw, f)
                 del response
