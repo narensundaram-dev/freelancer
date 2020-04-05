@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="3a9888e5-65ee-4134-96b9-df755aceabe5" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/../insta/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../insta/requirements.txt" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProjectId" id="1a77P93KTA0kfowhEOvzgJ02mhQ" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+  </component>
+  <component name="RunManager">
+    <configuration name="scraper" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="fasttech" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/scraper.py" />
+      <option name="PARAMETERS" value="-d $PROJECT_DIR$/scrappy" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.scraper" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="3a9888e5-65ee-4134-96b9-df755aceabe5" name="Default Changelist" comment="" />
+      <created>1586074751428</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1586074751428</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="418" y="198" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1586086449902">
+      <screen x="0" y="28" width="1920" height="1024" />
+    </state>
+    <state x="418" y="198" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.28.1920.1024@0.28.1920.1024" timestamp="1586086449902" />
+    <state x="1157" y="541" key="#xdebugger.evaluate" timestamp="1586080999712">
+      <screen x="0" y="28" width="1920" height="1024" />
+    </state>
+    <state x="1157" y="541" key="#xdebugger.evaluate/0.28.1920.1024@0.28.1920.1024" timestamp="1586080999712" />
+    <state width="1897" height="269" key="GridCell.Tab.0.bottom" timestamp="1586088793946">
+      <screen x="0" y="28" width="1920" height="1024" />
+    </state>
+    <state width="1897" height="269" key="GridCell.Tab.0.bottom/0.28.1920.1024@0.28.1920.1024" timestamp="1586088793946" />
+    <state width="1897" height="269" key="GridCell.Tab.0.center" timestamp="1586088793945">
+      <screen x="0" y="28" width="1920" height="1024" />
+    </state>
+    <state width="1897" height="269" key="GridCell.Tab.0.center/0.28.1920.1024@0.28.1920.1024" timestamp="1586088793945" />
+    <state width="1897" height="269" key="GridCell.Tab.0.left" timestamp="1586088793943">
+      <screen x="0" y="28" width="1920" height="1024" />
+    </state>
+    <state width="1897" height="269" key="GridCell.Tab.0.left/0.28.1920.1024@0.28.1920.1024" timestamp="1586088793943" />
+    <state width="1897" height="269" key="GridCell.Tab.0.right" timestamp="1586088793946">
+      <screen x="0" y="28" width="1920" height="1024" />
+    </state>
+    <state width="1897" height="269" key="GridCell.Tab.0.right/0.28.1920.1024@0.28.1920.1024" timestamp="1586088793946" />
+    <state width="1897" height="332" key="GridCell.Tab.1.bottom" timestamp="1586081006522">
+      <screen x="0" y="28" width="1920" height="1024" />
+    </state>
+    <state width="1897" height="332" key="GridCell.Tab.1.bottom/0.28.1920.1024@0.28.1920.1024" timestamp="1586081006522" />
+    <state width="1897" height="332" key="GridCell.Tab.1.center" timestamp="1586081006522">
+      <screen x="0" y="28" width="1920" height="1024" />
+    </state>
+    <state width="1897" height="332" key="GridCell.Tab.1.center/0.28.1920.1024@0.28.1920.1024" timestamp="1586081006522" />
+    <state width="1897" height="332" key="GridCell.Tab.1.left" timestamp="1586081006521">
+      <screen x="0" y="28" width="1920" height="1024" />
+    </state>
+    <state width="1897" height="332" key="GridCell.Tab.1.left/0.28.1920.1024@0.28.1920.1024" timestamp="1586081006521" />
+    <state width="1897" height="332" key="GridCell.Tab.1.right" timestamp="1586081006522">
+      <screen x="0" y="28" width="1920" height="1024" />
+    </state>
+    <state width="1897" height="332" key="GridCell.Tab.1.right/0.28.1920.1024@0.28.1920.1024" timestamp="1586081006522" />
+    <state width="961" height="512" key="XDebugger.FullValuePopup" timestamp="1586080919353">
+      <screen x="0" y="28" width="1920" height="1024" />
+    </state>
+    <state width="961" height="512" key="XDebugger.FullValuePopup/0.28.1920.1024@0.28.1920.1024" timestamp="1586080919353" />
+  </component>
+</project>
