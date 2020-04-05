@@ -47,7 +47,7 @@ class Product(object):
 
     def __init__(self, id, soup, destination):
         log.info("Getting information for product id: {}".format(id))
-        self.id = id
+        self.id = id.strip()
         self.soup = soup
         self.destination = destination
         self.product_path = os.path.join(self.destination, "{}") + "-" + self.id
@@ -55,8 +55,8 @@ class Product(object):
     @property
     def name(self):
         try:
-            name = r"{}".format(
-                self.soup.head.find("meta", attrs={"name": "twitter:title"}).attrs["content"]).replace("/", "|")
+            name = r"{}".format(self.soup.head.find("meta", attrs={"name": "twitter:title"}).attrs["content"])
+            name = name.replace("/", " ").replace('"', "").replace("'", "").strip()
             path = self.product_path.format(name)
             os.makedirs(path, exist_ok=True)
             return name
