@@ -27,3 +27,7 @@ a) Product Name
 b) Price
 c) Price in GBP (this is simply Price Multiply <Value of USD/GBP Multiply input before)
 d) Shipping time (Also found in source-code of product)
+
+
+## How to run
+python3.6.9 scraper.py -d /home/username/scraper
