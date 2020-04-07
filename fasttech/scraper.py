@@ -105,6 +105,19 @@ class Product(object):
             return 0.0
 
     @property
+    def price_shop(self):
+        try:
+            price = 0.0
+            if self.currency == "USD":
+                price = (self.price * 1.25) + 3
+            elif self.currency == "GBP":
+                price = ((self.price / 1.23) * 1.25) + 3
+            return round(price, 2)
+        except (Exception, WebsiteContentModified) as e:
+            log.debug("Product shop price is missing for product with id: {}".format(self.id))
+            return 0.0
+
+    @property
     def availability(self):
         try:
             siblings = list(self.soup.body.find("meta", attrs={"itemprop": "availability"}).next_siblings)
@@ -126,7 +139,12 @@ class Product(object):
     def store_description(self):
         path = os.path.join(self.product_path.format(self.name), "description.txt")
         with open(path, 'w+') as f:
-            f.write(self.description)
+            try:
+                f.write(self.description)
+            except UnicodeEncodeError as err:
+                f.write(self.description.encode("ascii", "ignore").decode("utf-8"))
+            except BaseException as err:
+                log.error("Error writing description for a product id: {}".format(self.id))
 
     def store_images(self):
         for idx, url_image in enumerate(self.images):
@@ -145,6 +163,7 @@ class Product(object):
             "name": self.name,
             "price": "{} {}".format(self.price, self.currency),
             "price_gbp": self.price_gbp,
+            "price_shop": self.price_shop,
             "availability": self.availability
         }
 
