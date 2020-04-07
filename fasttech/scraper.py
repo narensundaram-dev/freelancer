@@ -58,6 +58,7 @@ class Product(object):
         try:
             name = r"{}".format(self.soup.head.find("meta", attrs={"name": "twitter:title"}).attrs["content"])
             name = name.replace("/", " ").replace('"', "").replace("'", "").strip()
+            name = re.sub(r"[^A-Za-z0-9]+", " ", name).strip()
             path = self.product_path.format(name)
             os.makedirs(path, exist_ok=True)
             return name
