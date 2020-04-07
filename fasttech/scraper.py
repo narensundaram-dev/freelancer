@@ -136,6 +136,17 @@ class Product(object):
             log.debug("Product images is missing for product with id: {}".format(self.id))
             return []
 
+    @property
+    def category(self):
+        try:
+            breadcrumb = list(self.soup.body.find("div", attrs={"class": "Breadcrumb"}).descendants)
+            breadcrumb_no_navstr = filter(lambda x: not isinstance(x, NavigableString), breadcrumb)
+            breadcrumb_span = list(filter(lambda x: x.name == "span", breadcrumb_no_navstr))
+            return " > ".join(list(set(list(map(lambda x: x.get_text(), breadcrumb_span)))))
+        except (Exception, WebsiteContentModified) as e:
+            log.debug("Product images is missing for product with id: {}".format(self.id))
+            return ""
+
     def store_description(self):
         path = os.path.join(self.product_path.format(self.name), "description.txt")
         with open(path, 'w+') as f:
@@ -160,6 +171,7 @@ class Product(object):
         self.store_description()
         self.store_images()
         return {
+            "category": self.category,
             "name": self.name,
             "price": "{} {}".format(self.price, self.currency),
             "price_gbp": self.price_gbp,
