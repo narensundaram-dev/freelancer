@@ -66,7 +66,7 @@ thinc==7.4.0
 tqdm==4.45.0
 tzlocal==1.5.1
 ua-parser==0.7.3
-urllib3==1.22
+urllib3==1.24.2
 user-agents==1.1.0
 wasabi==0.6.0
 wcwidth==0.1.9
