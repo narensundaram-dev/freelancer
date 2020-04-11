@@ -5,6 +5,7 @@ import shutil
 import zipfile
 import logging
 import argparse
+from io import BytesIO
 from datetime import datetime as dt
 
 import nltk
@@ -12,11 +13,10 @@ import pandas as pd
 import win32com.client
 from xml.etree.ElementTree import XML
 
-from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
-from pdfminer.converter import TextConverter
 from pdfminer.layout import LAParams
 from pdfminer.pdfpage import PDFPage
-from io import BytesIO
+from pdfminer.converter import TextConverter
+from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
 
 
 __author__ = "Narendran G"
@@ -117,7 +117,10 @@ class CVReader(object):
 
         except Exception as e:
             log.error("Error getting the name from the document.")
+            return "", []
 
+        name = " ".join(name.split(" ")[:2]) if len(name.split(" ")) >= 2 else name
+        other_name_hits = other_name_hits[:5] if len(other_name_hits) >= 5 else other_name_hits
         return name, other_name_hits
 
     def extract_mobile(self):
