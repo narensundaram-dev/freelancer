@@ -112,7 +112,7 @@ class PCManager(object):
             self.chrome.get(self.url)
             try:
                 self.chrome.get(self.url)
-                page_loaded = WebDriverWait(self.chrome, 10).until(
+                page_loaded = WebDriverWait(self.chrome, 60).until(
                     EC.presence_of_element_located((By.CLASS_NAME, 'dropdowns')))
             except TimeoutException as err:
                 log.error("Timeout error!")
@@ -122,6 +122,11 @@ class PCManager(object):
         except Exception as e:
             log.debug(e)
             log.error("Error loading the pedal-commander.")
+
+    def get_url(self, key_year, key_make, key_model, key_sub_model, key_engine):
+        url = "{}{}?rq={}~{}~{}~{}~{}".format(
+            self.url, "/pages/product-result", key_year, key_make, key_model, key_sub_model, key_engine)
+        return url
 
     def read(self):
         count = 0
@@ -137,7 +142,8 @@ class PCManager(object):
                                         "make": make,
                                         "model": model,
                                         "sub_model": sub_model,
-                                        "engine": engine
+                                        "engine": engine,
+                                        "url": self.get_url(key_year, key_make, key_model, key_sub_model, key_engine)
                                     })
                                     count += 1
                                     log.info("Fetched combination for: {}, {}, {}, {}, {}. So far: {}".format(
@@ -146,9 +152,7 @@ class PCManager(object):
                 log.error("Error loading the pedal-commander. Please check your internet connection.")
                 exit(1)
         except Exception as e:
-            log.debug(e)
-            log.debug(traceback.format_exc())
-            log.error("Error fetching the available urls.")
+            log.info(e)
         finally:
             self.chrome.close()
             return self
